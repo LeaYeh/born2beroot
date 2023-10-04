@@ -28,6 +28,9 @@ sudo visudo
 
 #### SSH service
 
+> Requirement 
+>> A SSH service will be running on port 4242 only. For security reasons, it must not be possible to connect using SSH as root.
+
 安裝並確認 ssh service 狀態
 ```sh
 sudo apt install openssh-server
@@ -57,6 +60,9 @@ sudo vim /etc/ssh/sshd_config
 
 #### Firewall setting
 
+> Requirement
+>> You have to configure your operating system with the UFW firewall and thus leave only port 4242 open.
+
 安裝並啟用防火牆
 ```sh
 apt-get install ufw
@@ -76,6 +82,16 @@ sudo ufw allow 4242
 ```
 
 #### Password policy
+
+> Requirement
+>> You have to implement a strong password policy
+>>> * Your password has to expire every 30 days. 
+>>> * The minimum number of days allowed before the modification of a password will be set to 2.
+>>> * The user has to receive a warning message 7 days before their password expires.
+>>> * Your password must be at least 10 characters long. It must contain an uppercase letter, a lowercase letter, and a number. Also, it must not contain more than 3 consecutive identical characters.
+>>> * The password must not include the name of the user.
+>>> * The following rule does not apply to the root password: The password must have at least 7 characters that are not part of the former password.
+>>> * Of course, your root password has to comply with this policy.
 
 安裝套件包
 ```sh
@@ -124,14 +140,29 @@ sudo reboot
 sudo groupadd <GROUP_NAME>
 ```
 
+列出所有用戶
+```sh
+sudo cut -d: -f1 /etc/passwd
+```
+
 新增用戶
 ```sh
 sudo adduser <USER_NAME>
 ```
 
+刪除用戶
+```sh
+sudo userdel <USER_NAME>
+```
+
 將用戶加入對應群組
 ```sh
 sudo usermod -aG <GROUP_NAME> <USER_NAME>
+```
+
+將用戶移出對應群組
+```sh
+sudo deluser <USER_NAME> <GROUP_NAME>
 ```
 
 確認用戶使否在群組中
@@ -150,6 +181,17 @@ chage -l <USER_NAME>
 ```
 
 ##### Configuring sudoers group
+
+> Requriement
+>> * Authentication using sudo has to be limited to 3 attempts in the event of an incorrect password.
+>> * A custom message of your choice has to be displayed if an error due to a wrong
+password occurs when using sudo.
+>> * Each action using sudo has to be archived, both inputs and outputs. The log file
+has to be saved in the /var/log/sudo/ folder.
+>> * The TTY mode has to be enabled for security reasons.
+>> * For security reasons too, the paths that can be used by sudo must be restricted.
+>>> Example:
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
 
 ```sh
 sudo vim /etc/sudoers
@@ -183,6 +225,9 @@ Defaults   secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:
 ```
 
 ##### Hostname setting
+
+> Requirement
+>> The hostname of your virtual machine must be your login ending with 42 You will have to modify this hostname during your evaluation.
 
 顯示該主機狀態
 ```shell
